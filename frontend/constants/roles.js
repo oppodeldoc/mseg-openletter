@@ -7,7 +7,6 @@ export const ROLES = [
   'OUSD Staff',
   'Principal/Administrator',
   'School Board Director',
-  'Elected Official',
   'Community Member',
 ];
 
