@@ -27,6 +27,25 @@ const Title = ({ children, className }) => (
   <div className={`text-3xl md:text-4xl mt-0 mb-3 leading-tight ${className}`}>{children}</div>
 );
 const Text = ({ children }) => <div className=" font-sans max-w-2xl dark:text-gray-300">{children}</div>;
+
+// Markdown the statement body may use. Anything else (tables, code, raw HTML) is
+// unwrapped so its text still shows instead of disappearing.
+const markdownAllowedElements = ['a', 'br', 'p', 'b', 'i', 'strong', 'em', 'img', 'h1', 'h2', 'h3', 'h4', 'ul', 'ol', 'li', 'blockquote', 'hr'];
+const markdownComponents = {
+  // the letter title is the page's h1; demote author headings so the outline stays sane
+  h1: ({ children }) => <h2 className="text-2xl font-bold mt-8 mb-3 leading-tight">{children}</h2>,
+  h2: ({ children }) => <h2 className="text-2xl font-bold mt-8 mb-3 leading-tight">{children}</h2>,
+  h3: ({ children }) => <h3 className="text-xl font-bold mt-6 mb-2 leading-tight">{children}</h3>,
+  h4: ({ children }) => <h4 className="text-lg font-bold mt-4 mb-2">{children}</h4>,
+  ul: ({ children }) => <ul className="list-disc list-outside pl-6 my-4 space-y-1">{children}</ul>,
+  ol: ({ children }) => <ol className="list-decimal list-outside pl-6 my-4 space-y-1">{children}</ol>,
+  blockquote: ({ children }) => (
+    <blockquote className="border-l-4 border-gray-300 dark:border-gray-600 pl-4 my-4 italic text-gray-700 dark:text-gray-400">
+      {children}
+    </blockquote>
+  ),
+  hr: () => <hr className="my-8 border-gray-300 dark:border-gray-600" />,
+};
 const ViewMore = ({ children }) => <div className="text-center">{children}</div>;
 
 class Letter extends Component {
@@ -127,7 +146,12 @@ class Letter extends Component {
                 </div>
               )}
               <Text>
-                <ReactMarkdown plugins={[gfm]} allowedElements={['a', 'br', 'p', 'b', 'i', 'strong', 'em', 'img']}>
+                <ReactMarkdown
+                  plugins={[gfm]}
+                  allowedElements={markdownAllowedElements}
+                  unwrapDisallowed
+                  components={markdownComponents}
+                >
                   {text}
                 </ReactMarkdown>
               </Text>
