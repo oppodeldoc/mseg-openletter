@@ -112,3 +112,7 @@ dist
 
 # Claude desktop launch configs
 .claude/
+
+# Vercel CLI link
+.vercel
+.env*
