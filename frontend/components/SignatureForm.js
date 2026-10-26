@@ -3,10 +3,10 @@ import { withIntl } from '../lib/i18n';
 import { ROLES } from '../constants/roles';
 
 const fieldClass =
-  'border-dotted border-gray-400 border p-2 rounded-lg w-full bg-white dark:bg-black dark:text-gray-50 dark:border-white focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-900 dark:focus:ring-white';
-const labelClass = 'block text-sm text-gray-700 dark:text-gray-300 mb-1';
+  'border border-gray-300 p-2 rounded w-full bg-white text-brand-ink focus:outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/40';
+const labelClass = 'block text-sm font-medium text-brand-ink mb-1';
 const checkboxClass =
-  'h-5 w-5 mt-0.5 rounded border-gray-400 text-gray-900 focus:ring-2 focus:ring-offset-1 focus:ring-gray-900 dark:focus:ring-white';
+  'h-5 w-5 mt-0.5 rounded border-gray-400 accent-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/40';
 
 const Field = ({ label, name, children }) => (
   <div className="w-full py-1">
@@ -71,7 +71,7 @@ class SignatureForm extends Component {
         <div className="flex-wrap">
           <Field label={t('sign.name')} name="name">
             <input
-              className={`font-[SignPainter] text-3xl pt-2 px-2 pb-1 ${fieldClass}`}
+              className={`text-lg ${fieldClass}`}
               type="text"
               id="name"
               name="name"
@@ -149,7 +149,7 @@ class SignatureForm extends Component {
           )}
 
           <div className="my-2">
-            <label htmlFor="show_name" className="flex items-start gap-2 cursor-pointer dark:text-gray-300">
+            <label htmlFor="show_name" className="flex items-start gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 id="show_name"
@@ -160,14 +160,14 @@ class SignatureForm extends Component {
               />
               <span>
                 {t('sign.show_name')}
-                <span className="block text-xs text-gray-500 dark:text-gray-400">{t('sign.show_name.hint')}</span>
+                <span className="block text-xs text-gray-600">{t('sign.show_name.hint')}</span>
               </span>
             </label>
           </div>
 
           {!this.updatingSignature && letter.user_id && (
             <div className="my-2">
-              <label htmlFor="share_email" className="flex items-start gap-2 cursor-pointer dark:text-gray-300">
+              <label htmlFor="share_email" className="flex items-start gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   id="share_email"
@@ -183,14 +183,14 @@ class SignatureForm extends Component {
         <div className="mt-4 mb-6">
           <button
             type="submit"
-            className="text-white text-base font-sans border-white bg-gray-900 p-3 rounded-lg w-full disabled:bg-gray-500 dark:bg-black dark:text-white dark:border-white border-2 font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-white"
+            className="text-white text-base font-semibold bg-brand-green hover:bg-brand-green-dark p-3 rounded w-full disabled:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-green"
             disabled={this.state.loading}
           >
             {this.props.signature ? t('sign.update') : t('sign.button')}
           </button>
         </div>
         {error && (
-          <div role="alert" className="text-red-700 dark:text-red-400 font-bold text-center m-4">
+          <div role="alert" className="text-red-700 font-bold text-center m-4">
             {error.message}
           </div>
         )}

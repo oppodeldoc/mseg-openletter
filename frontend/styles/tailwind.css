@@ -2,20 +2,25 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+body {
+  @apply bg-white text-brand-ink font-sans antialiased;
+}
+
 a {
-  @apply text-blue-400;
+  @apply text-brand-green underline underline-offset-2;
 }
 
 a:hover {
-  @apply text-blue-600;
+  @apply text-brand-green-dark;
 }
 
 img {
   @apply my-4;
 }
 
-body {
-  @apply dark:bg-gray-950 dark:text-gray-100;
+/* Statement body */
+.letter {
+  @apply text-[17px] leading-relaxed;
 }
 
 .letter p {
@@ -40,4 +45,10 @@ body {
   .letter a {
     max-width: 250px;
   }
+}
+
+/* Gold accent under section headings, as on ousd-mseg.org */
+.brand-underline::after {
+  content: '';
+  @apply block w-14 h-1 mt-2 bg-brand-gold rounded-sm;
 }

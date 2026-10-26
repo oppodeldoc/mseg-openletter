@@ -69,7 +69,7 @@ export default withIntl(({ start, signatures, t, total }) => {
   if (total >= 10000) leftPadding = 'pl-14';
 
   return (
-    <ol start={start || 1} className={`dark:text-gray-300 list-decimal list-outside ${leftPadding}`}>
+    <ol start={start || 1} className={`list-decimal list-outside text-[15px] ${leftPadding}`}>
       {sortedSignatures.map((signature, i) => (
         <li key={`signature-${(start || 1) + i}`} className="my-1">{printSignature(signature)}</li>
       ))}

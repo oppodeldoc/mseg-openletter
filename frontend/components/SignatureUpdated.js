@@ -6,8 +6,8 @@ import Router from 'next/router';
 import React, { useEffect } from 'react';
 
 const NotificationBox = styled.div`
-  border-top: 4px solid black;
-  border-bottom: 4px solid black;
+  border-top: 4px solid #026937;
+  border-bottom: 4px solid #026937;
   ${space}
 `;
 

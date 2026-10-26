@@ -1,3 +1,9 @@
+// The API HTML-escapes letter text on save, which turns a Markdown blockquote
+// marker into "&gt;". Restore it at line starts so "> quote" still renders.
+export function restoreBlockquotes(text) {
+  return (text || '').replace(/^(\s*)&gt;/gm, '$1>');
+}
+
 export function replaceURLsWithMarkdownAnchors(text) {
   const regex = /((http?s:\/\/)?[-a-zA-Z0-9@:%._\+~#=,]{1,256}\.[a-zA-Z]{2,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=,]*)(?<!,)(?<!\)))/gi;
   return text.replace(regex, (match) => {

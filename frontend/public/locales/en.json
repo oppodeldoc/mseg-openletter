@@ -83,5 +83,7 @@
   "footer.andsignit": "and share it with your community",
   "home.values.1": "Run by MSEG on infrastructure it controls 🔅",
   "signed": "Signed!",
-  "signed.share": "Share this statement and get more people to sign it."
+  "signed.share": "Share this statement and get more people to sign it.",
+  "header.home": "OUSD MSEG home",
+  "header.back": "Back to ousd-mseg.org"
 }

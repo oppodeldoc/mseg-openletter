@@ -7,6 +7,8 @@ const API_URL = process.env.API_URL || 'http://localhost:3000';
 const PRIVACY_URL = process.env.PRIVACY_URL || 'https://ousd-mseg.org/pages/privacy';
 // Slug of MSEG's statement; when set, `/` redirects straight to it.
 const LETTER_SLUG = process.env.LETTER_SLUG || '';
+// Public origin of this site, for absolute URLs in social-sharing tags.
+const SITE_URL = process.env.SITE_URL || 'https://sign.ousd-mseg.org';
 // Letter creation/edition is a one-time admin task; keep `/create` a 404 otherwise.
 const ALLOW_LETTER_CREATE = process.env.ALLOW_LETTER_CREATE === 'true' ? 'true' : 'false';
 
@@ -14,6 +16,7 @@ module.exports = {
   env: {
     API_URL,
     PRIVACY_URL,
+    SITE_URL,
     LETTER_SLUG,
     ALLOW_LETTER_CREATE,
   },

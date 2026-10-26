@@ -13,7 +13,7 @@ import Updates from '../../components/Updates';
 import LocaleSelector from '../../components/LocaleSelector';
 import { withIntl } from '../../lib/i18n';
 import { fetchJson } from '../../lib/api';
-import { replaceURLsWithMarkdownAnchors } from '../../lib/utils';
+import { replaceURLsWithMarkdownAnchors, restoreBlockquotes } from '../../lib/utils';
 import moment from 'moment';
 import Head from 'next/head';
 import ReactMarkdown from 'react-markdown';
@@ -24,9 +24,9 @@ import Image from 'next/image';
 
 const Page = ({ children, className }) => <div className={`max-w-4xl mx-auto ${className}`}>{children}</div>;
 const Title = ({ children, className }) => (
-  <div className={`text-3xl md:text-4xl mt-0 mb-3 leading-tight ${className}`}>{children}</div>
+  <h1 className={`text-3xl md:text-4xl font-bold mt-1 mb-6 leading-tight brand-underline ${className || ''}`}>{children}</h1>
 );
-const Text = ({ children }) => <div className=" font-sans max-w-2xl dark:text-gray-300">{children}</div>;
+const Text = ({ children }) => <div className="max-w-2xl">{children}</div>;
 
 // Markdown the statement body may use. Anything else (tables, code, raw HTML) is
 // unwrapped so its text still shows instead of disappearing.
@@ -109,18 +109,20 @@ class Letter extends Component {
       );
     }
 
-    const text = replaceURLsWithMarkdownAnchors(letter.text.replace(/<br ?\/> ?/g, '\n'));
+    const text = replaceURLsWithMarkdownAnchors(restoreBlockquotes(letter.text.replace(/<br ?\/> ?/g, '\n')));
 
     return (
       <div>
         <Head>
           <title>{letter.title}</title>
-          <link rel="shortcut icon" href="/icon.png" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-          {letter.image && <meta name="twitter:image" content={letter.image.src} />}
-          {letter.image && <meta name="og:image" content={letter.image.src} />}
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <meta property="og:title" content={letter.title} />
+          <meta property="og:type" content="website" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:image" content={letter.image ? letter.image.src : `${process.env.SITE_URL}/images/og-default.png`} />
+          <meta property="og:image" content={letter.image ? letter.image.src : `${process.env.SITE_URL}/images/og-default.png`} />
         </Head>
-        <Page className="letter">
+        <Page className="letter px-2 md:px-0 mt-6">
           {status === 'created' && (
             <Notification
               icon="signed"
@@ -134,7 +136,9 @@ class Letter extends Component {
           <Flex flexWrap="wrap">
             <Box width={[1, 2 / 3]} p={3}>
               <LocaleSelector slug={letter.slug} locales={letter.locales} currentLocale={letter.locale} />
-              <strong>{moment.utc(letter.created_at).format('D MMMM YYYY')}</strong>
+              <div className="text-sm font-semibold uppercase tracking-wide text-brand-green">
+                {moment.utc(letter.created_at).format('D MMMM YYYY')}
+              </div>
               <Title>{letter.title}</Title>
               {letter.image && letter.image.src && (
                 <div className="w-full">

@@ -3,7 +3,7 @@ import { withIntl } from '../lib/i18n';
 import NumberFormat from 'react-number-format';
 
 const Verified = ({ children }) => (
-  <div className="text-gray-900 mt-1 cursor-pointer dark:text-gray-500 text-xl">{children}</div>
+  <div className="text-gray-600 mt-1 cursor-pointer text-lg">{children}</div>
 );
 
 const TooltipText = ({ children }) => <div className="text-gray-500 text-base">{children}</div>;
@@ -49,10 +49,10 @@ export default withIntl(({ signatures, t, stats }) => {
   return (
     <div>
       <div className="mx-1 mb-8">
-        <div className="text-center md:text-left text-7xl">
+        <div className="text-center md:text-left text-7xl font-bold text-brand-green leading-none">
           <NumberFormat value={signatures_stats.total} displayType={'text'} thousandSeparator={true} />
         </div>
-        <div className="-mt-1 text-center md:text-left text-3xl md:text-4xl">signatures</div>
+        <div className="mt-1 text-center md:text-left text-2xl font-semibold">signatures</div>
         <div className="text-center md:text-left">
           {signatures_stats.total != signatures_stats.verified && (
             <Verified>
