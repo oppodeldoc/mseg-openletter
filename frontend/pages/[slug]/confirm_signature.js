@@ -5,7 +5,6 @@ import Notification from '../../components/Notification';
 import Router, { withRouter } from 'next/router';
 import { withIntl } from '../../lib/i18n';
 import { fetchJson } from '../../lib/api';
-import DonorsList from '../../components/DonorsList';
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -73,19 +72,6 @@ class ConfirmSignaturePage extends Component {
                 </a>
                 .
               </p>
-              <div className="max-w-md mx-auto bg-gray-50 dark:bg-gray-800 rounded-xl p-6 my-8 shadow-md">
-                <h2 className="text-2xl font-bold mb-3 bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent dark:text-white">
-                  {t('notification.signed.donate.title')}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">{t('notification.signed.donate.description')}</p>
-                <a
-                  className="inline-block w-full text-center transition-all duration-200 text-white text-lg font-medium bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600 py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 hover:text-white"
-                  href="https://donate.stripe.com/28EcN52CwaOIb2X8e5eUU0k"
-                >
-                  {t('notification.signed.donate.button')}
-                </a>
-              </div>
-              <DonorsList compact />
             </>
           )}
           {!status && (

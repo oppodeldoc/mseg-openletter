@@ -108,4 +108,12 @@ class CreateLetterPage extends Component {
   }
 }
 
+// Letter creation is a one-time admin task: 404 unless ALLOW_LETTER_CREATE=true at build time.
+export async function getServerSideProps() {
+  if (process.env.ALLOW_LETTER_CREATE !== 'true') {
+    return { notFound: true };
+  }
+  return { props: {} };
+}
+
 export default withIntl(CreateLetterPage);

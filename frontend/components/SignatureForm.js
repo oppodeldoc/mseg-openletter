@@ -1,48 +1,48 @@
 import React, { Component } from 'react';
 import { withIntl } from '../lib/i18n';
-import { Label, Checkbox } from '@rebass/forms';
-import { isPasskeySupported, isPlatformAuthenticatorAvailable } from '../lib/passkey';
+import { ROLES, OTHER_ROLE } from '../constants/roles';
 
-const Input = ({ type, name, placeholder, onChange, ...rest }) => (
-  <input
-    className="border-dotted border-gray-400 border p-2 rounded-lg w-full dark:bg-black dark:text-gray-50 dark:border-white"
-    type={type || 'text'}
-    id={name}
-    placeholder={placeholder || name}
-    onChange={(e) => onChange(name, e.target.value)}
-    {...rest}
-  />
+const fieldClass =
+  'border-dotted border-gray-400 border p-2 rounded-lg w-full bg-white dark:bg-black dark:text-gray-50 dark:border-white focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-900 dark:focus:ring-white';
+const labelClass = 'block text-sm text-gray-700 dark:text-gray-300 mb-1';
+const checkboxClass =
+  'h-5 w-5 mt-0.5 rounded border-gray-400 text-gray-900 focus:ring-2 focus:ring-offset-1 focus:ring-gray-900 dark:focus:ring-white';
+
+const Field = ({ label, name, children }) => (
+  <div className="w-full py-1">
+    <label htmlFor={name} className={labelClass}>
+      {label}
+    </label>
+    {children}
+  </div>
 );
 
 class SignatureForm extends Component {
   constructor(props) {
     super(props);
+    const existing = this.props.signature || {};
+    const existingRole = existing.occupation || '';
+    const roleIsPreset = ROLES.includes(existingRole);
     this.state = {
       loading: false,
-      passkeyAvailable: false,
-      usePasskey: false, // disabled by default; enabled only when ?passkey=true in URL
+      // which <option> is selected; the free-text value lives in form.occupation
+      roleChoice: existingRole ? (roleIsPreset ? existingRole : OTHER_ROLE) : '',
       form: {
-        name: null,
-        occupation: null,
-        city: null,
+        name: existing.name || null,
+        occupation: existingRole || null,
+        city: existing.city || null,
+        organization: existing.organization || null,
         email: null,
         share_email: false,
-        id: this.props.signature && this.props.signature.id,
-        token: this.props.signature && this.props.signature.token,
+        show_name: typeof existing.show_name === 'boolean' ? existing.show_name : true,
+        id: existing.id,
+        token: existing.token,
       },
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleRoleChoice = this.handleRoleChoice.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  async componentDidMount() {
-    // Only enable passkey when ?passkey=true is in the URL
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('passkey') === 'true' && isPasskeySupported()) {
-      const available = await isPlatformAuthenticatorAvailable();
-      this.setState({ passkeyAvailable: available, usePasskey: available });
-    }
   }
 
   handleChange(fieldname, value) {
@@ -51,16 +51,17 @@ class SignatureForm extends Component {
     this.setState({ form });
   }
 
+  handleRoleChoice(choice) {
+    // a preset role is the stored value; "Other" clears it until the text field is filled
+    this.handleChange('occupation', choice === OTHER_ROLE ? '' : choice);
+    this.setState({ roleChoice: choice });
+  }
+
   async handleSubmit(event) {
     this.setState({ loading: true });
     event.preventDefault();
 
-    const formData = { ...this.state.form };
-    if (this.state.usePasskey && this.state.passkeyAvailable) {
-      formData.use_passkey = true;
-    }
-
-    await this.props.onSubmit(formData);
+    await this.props.onSubmit({ ...this.state.form });
 
     // just in case
     setTimeout(() => {
@@ -73,125 +74,153 @@ class SignatureForm extends Component {
 
   render() {
     const { error, t, letter } = this.props;
-    const { passkeyAvailable, usePasskey } = this.state;
-    const showEmailField = !this.updatingSignature && !usePasskey;
-    const showEmailOptional = !this.updatingSignature && usePasskey && passkeyAvailable;
+    const { roleChoice, form } = this.state;
+    const existing = this.props.signature || {};
 
     return (
       <form onSubmit={this.handleSubmit}>
         <div className="flex-wrap">
-          <div className="w-full py-1">
+          <Field label={t('sign.name')} name="name">
             <input
-              className="font-[SignPainter] text-3xl border-dotted border-gray-400 border pt-2 px-2 pb-1 rounded-lg w-full dark:bg-black dark:text-gray-50 dark:border-white"
+              className={`font-[SignPainter] text-3xl pt-2 px-2 pb-1 ${fieldClass}`}
               type="text"
               id="name"
-              placeholder={t('sign.name')}
+              name="name"
+              autoComplete="name"
               maxLength={128}
-              defaultValue={this.props.signature && this.props.signature.name}
+              required
+              defaultValue={existing.name}
               onChange={(e) => this.handleChange('name', e.target.value)}
             />
-          </div>
-          <div className="flex w-full py-1">
-            <div className="w-1/2 mr-1">
-              <Input
+          </Field>
+
+          <Field label={t('sign.role')} name="role">
+            <select
+              id="role"
+              name="role"
+              className={fieldClass}
+              required
+              value={roleChoice}
+              onChange={(e) => this.handleRoleChoice(e.target.value)}
+            >
+              <option value="" disabled>
+                {t('sign.role.placeholder')}
+              </option>
+              {ROLES.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+              <option value={OTHER_ROLE}>{t('sign.role.other')}</option>
+            </select>
+          </Field>
+
+          {roleChoice === OTHER_ROLE && (
+            <Field label={t('sign.role.other.label')} name="occupation">
+              <input
+                className={fieldClass}
+                type="text"
+                id="occupation"
                 name="occupation"
-                placeholder={t('sign.occupation')}
                 maxLength={64}
-                onChange={this.handleChange}
-                defaultValue={this.props.signature && this.props.signature.occupation}
+                required
+                defaultValue={ROLES.includes(existing.occupation) ? '' : existing.occupation}
+                onChange={(e) => this.handleChange('occupation', e.target.value)}
               />
+            </Field>
+          )}
+
+          <div className="flex w-full gap-2">
+            <div className="w-1/2">
+              <Field label={t('sign.organization')} name="organization">
+                <input
+                  className={fieldClass}
+                  type="text"
+                  id="organization"
+                  name="organization"
+                  autoComplete="organization"
+                  maxLength={64}
+                  defaultValue={existing.organization}
+                  onChange={(e) => this.handleChange('organization', e.target.value)}
+                />
+              </Field>
             </div>
             <div className="w-1/2">
-              <Input
-                name="city"
-                placeholder={t('sign.city')}
-                maxLength={64}
-                onChange={this.handleChange}
-                defaultValue={this.props.signature && this.props.signature.city}
+              <Field label={t('sign.city')} name="city">
+                <input
+                  className={fieldClass}
+                  type="text"
+                  id="city"
+                  name="city"
+                  autoComplete="address-level2"
+                  maxLength={64}
+                  defaultValue={existing.city}
+                  onChange={(e) => this.handleChange('city', e.target.value)}
+                />
+              </Field>
+            </div>
+          </div>
+
+          {!this.updatingSignature && (
+            <Field label={t('sign.email')} name="email">
+              <input
+                className={fieldClass}
+                type="email"
+                id="email"
+                name="email"
+                autoComplete="email"
+                required
+                onChange={(e) => this.handleChange('email', e.target.value)}
               />
-            </div>
+            </Field>
+          )}
+
+          <div className="my-2">
+            <label htmlFor="show_name" className="flex items-start gap-2 cursor-pointer dark:text-gray-300">
+              <input
+                type="checkbox"
+                id="show_name"
+                name="show_name"
+                className={checkboxClass}
+                checked={form.show_name}
+                onChange={(e) => this.handleChange('show_name', e.target.checked)}
+              />
+              <span>
+                {t('sign.show_name')}
+                <span className="block text-xs text-gray-500 dark:text-gray-400">{t('sign.show_name.hint')}</span>
+              </span>
+            </label>
           </div>
-          <div className="w-full py-1">
-            <Input
-              name="organization"
-              placeholder={t('sign.organization')}
-              maxLength={64}
-              onChange={this.handleChange}
-              defaultValue={this.props.signature && this.props.signature.organization}
-            />
-          </div>
 
-          {/* Passkey toggle */}
-          {passkeyAvailable && !this.updatingSignature && (
-            <div className="w-full py-2">
-              <div className="flex items-center gap-2 text-sm">
-                <button
-                  type="button"
-                  onClick={() => this.setState({ usePasskey: true })}
-                  className={`px-3 py-1.5 rounded-lg border transition-colors ${
-                    usePasskey
-                      ? 'bg-gray-900 text-white border-gray-900 dark:bg-white dark:text-black dark:border-white'
-                      : 'bg-transparent text-gray-500 border-gray-300 dark:border-gray-600'
-                  }`}
-                >
-                  🔐 {t('sign.passkey')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => this.setState({ usePasskey: false })}
-                  className={`px-3 py-1.5 rounded-lg border transition-colors ${
-                    !usePasskey
-                      ? 'bg-gray-900 text-white border-gray-900 dark:bg-white dark:text-black dark:border-white'
-                      : 'bg-transparent text-gray-500 border-gray-300 dark:border-gray-600'
-                  }`}
-                >
-                  ✉️ {t('sign.email')}
-                </button>
-              </div>
-              {usePasskey && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  {t('sign.passkey.info')}
-                </p>
-              )}
-            </div>
-          )}
-
-          {/* Email field: required for email flow, optional for passkey (for updates) */}
-          {showEmailField && (
-            <div className="w-full py-1">
-              <Input type="email" name="email" placeholder={t('sign.email')} onChange={this.handleChange} required />
-            </div>
-          )}
-          {showEmailOptional && (
-            <div className="w-full py-1">
-              <Input type="email" name="email" placeholder={t('sign.email.optional')} onChange={this.handleChange} />
-            </div>
-          )}
-
-          {!this.updatingSignature && !usePasskey && letter.user_id && (
-            <div className="my-1">
-              <Label>
-                <div className="mt-1 mr-0">
-                  <Checkbox
-                    id="share_email"
-                    name="share_email"
-                    onChange={(e) => this.handleChange('share_email', e.target.checked)}
-                  />
-                </div>
-                <label className="ml-1">{t('sign.share_email')}</label>
-              </Label>
+          {!this.updatingSignature && letter.user_id && (
+            <div className="my-2">
+              <label htmlFor="share_email" className="flex items-start gap-2 cursor-pointer dark:text-gray-300">
+                <input
+                  type="checkbox"
+                  id="share_email"
+                  name="share_email"
+                  className={checkboxClass}
+                  onChange={(e) => this.handleChange('share_email', e.target.checked)}
+                />
+                <span>{t('sign.share_email')}</span>
+              </label>
             </div>
           )}
         </div>
         <div className="mt-4 mb-6">
           <button
-            className="text-white text-base font-sans border-white bg-gray-900 p-3 rounded-lg w-full disabled:bg-gray-500 dark:bg-black dark:text-white dark:border-white border-2 font-bold"
+            type="submit"
+            className="text-white text-base font-sans border-white bg-gray-900 p-3 rounded-lg w-full disabled:bg-gray-500 dark:bg-black dark:text-white dark:border-white border-2 font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-white"
             disabled={this.state.loading}
           >
-            {this.props.signature ? t('sign.update') : usePasskey ? t('sign.button.passkey') : t('sign.button')}
+            {this.props.signature ? t('sign.update') : t('sign.button')}
           </button>
         </div>
-        {error && <div className="text-red font-bold text-center m-4">{error.message}</div>}
+        {error && (
+          <div role="alert" className="text-red-700 dark:text-red-400 font-bold text-center m-4">
+            {error.message}
+          </div>
+        )}
       </form>
     );
   }

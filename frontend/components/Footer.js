@@ -1,6 +1,8 @@
-import Link from 'next/link';
 import { withIntl } from '../lib/i18n';
 import React, { useState, useEffect } from 'react';
+
+const linkClass =
+  'hover:text-gray-800 dark:hover:text-gray-200 underline-offset-2 hover:underline focus:outline-none focus:ring-2 focus:ring-gray-900 dark:focus:ring-white rounded';
 
 function Footer({ t }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -43,17 +45,19 @@ function Footer({ t }) {
             />
           </svg>
         </div>
-        <div className="text-base leading-6 mt-2">
-          <Link href={`/create`}>{t('footer.create')}</Link>
-          <br />
-          {t('footer.andsignit')}
-        </div>
+        <div className="text-base leading-6 mt-2">{t('footer.tagline')}</div>
         <div className="mt-4 flex justify-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-          <Link href="/tos" className="hover:text-gray-800 dark:hover:text-gray-200">Terms of Service</Link>
-          <span>·</span>
-          <Link href="/donate" className="hover:text-gray-800 dark:hover:text-gray-200">{t('notification.signed.donate.button')}</Link>
-          <span>·</span>
-          <a href="https://github.com/citizenspring/openletter" className="hover:text-gray-800 dark:hover:text-gray-200">GitHub</a>
+          <a href="https://ousd-mseg.org" className={linkClass}>
+            {t('footer.mseg')}
+          </a>
+          <span aria-hidden="true">·</span>
+          <a href={process.env.PRIVACY_URL} className={linkClass}>
+            {t('footer.privacy')}
+          </a>
+          <span aria-hidden="true">·</span>
+          <a href="https://github.com/oppodeldoc/mseg-openletter" className={linkClass}>
+            GitHub
+          </a>
         </div>
       </center>
     </div>

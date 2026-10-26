@@ -34,16 +34,6 @@ export default withIntl(({ t }) => (
         <A>{t('faq.q5.response')}</A>
       </details>
       <details>
-        <Q>{t('faq.q6')}</Q>
-        <A>
-          <a href="https://opencollective.com/openletter/conversations">{t('faq.q6.response')}</a>
-        </A>
-      </details>
-      <details>
-        <Q>{t('faq.q7')}</Q>
-        <A dangerouslySetInnerHTML={{ __html: t('faq.q7.response') }} />
-      </details>
-      <details>
         <Q>{t('faq.q8')}</Q>
         <A dangerouslySetInnerHTML={{ __html: t('faq.q8.response') }} />
       </details>

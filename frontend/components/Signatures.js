@@ -43,15 +43,14 @@ export default withIntl(({ start, signatures, t, total }) => {
     return <div>{t('signatures.first')}</div>;
   }
 
+  // "Name — Role, Organization, City"; anonymous signers (name hidden by the API) show as "Anonymous"
   const printSignature = (signature) => {
-    const fields = ['name', 'occupation', 'organization', 'city'];
-    const res = [];
-    fields.map((field) => {
-      if (signature[field]) {
-        res.push(signature[field].trim());
-      }
-    });
-    const str = res.join(', ');
+    const name = signature.name ? signature.name.trim() : t('signature.anonymous');
+    const details = ['occupation', 'organization', 'city']
+      .map((field) => signature[field] && signature[field].trim())
+      .filter(Boolean)
+      .join(', ');
+    const str = details ? `${name} — ${details}` : name;
     return signature.is_verified ? (
       str
     ) : (

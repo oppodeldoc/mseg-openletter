@@ -26,10 +26,10 @@ function Homepage({ t, letters, stats, error }) {
     return (
       <>
         <Head>
-          <title>Open Letter</title>
-          <meta name="description" content="Open Letter is a platform for writing and signing open letters." />
-          <meta property="og:title" content="Open Letter" />
-          <meta property="og:description" content="Open Letter is a platform for writing and signing open letters." />
+          <title>MSEG Statement</title>
+          <meta name="description" content="Sign the MSEG statement of support." />
+          <meta property="og:title" content="MSEG Statement" />
+          <meta property="og:description" content="Sign the MSEG statement of support." />
           <meta property="og:image" content="/icon.png" />
           <link rel="shortcut icon" href="/icon.png" />
           <link rel="apple-touch-icon" href="/icon.png" />
@@ -77,10 +77,10 @@ function Homepage({ t, letters, stats, error }) {
   return (
     <>
       <Head>
-        <title>Open Letter</title>
-        <meta name="description" content="Open Letter is a platform for writing and signing open letters." />
-        <meta property="og:title" content="Open Letter" />
-        <meta property="og:description" content="Open Letter is a platform for writing and signing open letters." />
+        <title>MSEG Statement</title>
+        <meta name="description" content="Sign the MSEG statement of support." />
+        <meta property="og:title" content="MSEG Statement" />
+        <meta property="og:description" content="Sign the MSEG statement of support." />
         <meta property="og:image" content="/icon.png" />
         <link rel="shortcut icon" href="/icon.png" />
         <link rel="apple-touch-icon" href="/icon.png" />

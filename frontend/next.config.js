@@ -2,15 +2,23 @@ require('dotenv').config();
 
 var locales = require('./constants/locales');
 
+// All three are read at BUILD time (Vercel: redeploy after changing them).
+const API_URL = process.env.API_URL || 'http://localhost:3000';
+const PRIVACY_URL = process.env.PRIVACY_URL || 'https://ousd-mseg.org/pages/privacy';
+// Slug of MSEG's statement; when set, `/` redirects straight to it.
+const LETTER_SLUG = process.env.LETTER_SLUG || '';
+// Letter creation/edition is a one-time admin task; keep `/create` a 404 otherwise.
+const ALLOW_LETTER_CREATE = process.env.ALLOW_LETTER_CREATE === 'true' ? 'true' : 'false';
+
 module.exports = {
   env: {
-    // You can also use process.env.API_URL if it is defined in your .env file
-    API_URL: process.env.API_URL || 'https://api.openletter.earth',
-    OC_GRAPHQL_API: 'https://api.opencollective.com/graphql/v1/',
-    OC_GRAPHQL_API_V2: 'https://api.opencollective.com/graphql/v2/',
+    API_URL,
+    PRIVACY_URL,
+    LETTER_SLUG,
+    ALLOW_LETTER_CREATE,
   },
   async redirects() {
-    return [
+    const redirects = [
       // Redirect /$slug/$locale to /$locale/$slug
       {
         source: '/:slug/:locale(\\w{2})',
@@ -18,19 +26,14 @@ module.exports = {
         permanent: false,
       },
     ];
+    if (LETTER_SLUG) {
+      redirects.unshift({ source: '/', destination: `/${LETTER_SLUG}`, permanent: false });
+    }
+    return redirects;
   },
   i18n: {
-    // These are all the locales you want to support in
-    // your application
     locales: Object.keys(locales),
-    // This is the default locale you want to be used when visiting
-    // a non-locale prefixed path e.g. `/hello`
     defaultLocale: 'en',
-    // This is a list of locale domains and the default locale they
-    // should handle (these are only required when setting up domain routing)
-    // Note: subdomains must be included in the domain value to be matched e.g. "fr.example.com".
-    // Locale detection from Accept-Language is on by default (Next 13+ only
-    // accepts `localeDetection: false`).
   },
   compiler: {
     // SWC replacement for babel-plugin-styled-components: stable class names

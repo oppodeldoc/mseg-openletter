@@ -1,62 +1,6 @@
 {
-  "ar": {
-    "name": "عربى",
-    "emoji": "🇦🇪"
-  },
-  "de": {
-    "name": "Deutsche",
-    "emoji": "🇩🇪"
-  },
-  "zh": {
-    "name": "中文",
-    "emoji": "🇨🇳"
-  },
-  "es": {
-    "name": "Español",
-    "emoji": "🇪🇸"
-  },
-  "ja": {
-    "name": "日本語",
-    "emoji": "🇯🇵"
-  },
-  "ru": {
-    "name": "Русский",
-    "emoji": "🇷🇺"
-  },
   "en": {
     "name": "English",
-    "emoji": "🇬🇧"
-  },
-  "fr": {
-    "name": "Français",
-    "emoji": "🇫🇷"
-  },
-  "nl": {
-    "name": "Nederlands",
-    "emoji": "🇳🇱"
-  },
-  "tr": {
-    "name": "Türkçe",
-    "emoji": "🇹🇷"
-  },
-  "hi": {
-    "name": "हिन्दी",
-    "emoji": "🇮🇳"
-  },
-  "pt": {
-    "name": "Português",
-    "emoji": "🇵🇹"
-  },
-  "bn": {
-    "name": "বাংলা",
-    "emoji": "🇧🇩"
-  },
-  "id": {
-    "name": "Bahasa Indonesia",
-    "emoji": "🇮🇩"
-  },
-  "ko": {
-    "name": "한국어",
-    "emoji": "🇰🇷"
+    "emoji": "🇺🇸"
   }
 }

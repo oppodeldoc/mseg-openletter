@@ -109,3 +109,6 @@ dist
 .vscode
 
 .now
+
+# Claude desktop launch configs
+.claude/

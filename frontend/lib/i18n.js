@@ -4,10 +4,9 @@ import parser from 'accept-language-parser';
 import availableLocales from '../constants/locales.json';
 
 const locales = {};
+// English only for now; add `locales.es = require('../public/locales/es.json')` (plus
+// constants/locales.json and the API email templates) to ship Spanish.
 locales.en = require('../public/locales/en.json');
-locales.fr = require('../public/locales/fr.json');
-locales.nl = require('../public/locales/nl.json');
-locales.de = require('../public/locales/de.json');
 
 const defaultLanguage = 'en';
 

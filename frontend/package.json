@@ -1,22 +1,18 @@
 {
-  "name": "openletter",
+  "name": "mseg-openletter-frontend",
   "version": "1.0.0",
-  "description": "Description ",
+  "description": "MSEG sign-on statement \u2014 frontend (fork of citizenspring/openletter)",
   "main": "index.js",
   "scripts": {
-    "prebuild": "node scripts/seed-oc-donors.js || true; node scripts/sync-donors.js || true",
     "build": "next build",
     "build:langs": "sync-i18n --files 'public/locales/*.json' --primary en --space 2",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "next",
-    "start": "node server.js",
-    "install": "npm run build",
-    "cron": "node scripts/sync-donors.js",
-    "seed:oc-donors": "node scripts/seed-oc-donors.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AllForClimate/openletter.git"
+    "url": "git+https://github.com/oppodeldoc/mseg-openletter.git"
   },
   "author": "Xavier Damman <@xdamman>",
   "license": "MIT",
@@ -24,19 +20,17 @@
     "node": "22.x"
   },
   "bugs": {
-    "url": "https://github.com/AllForClimate/openletter/issues"
+    "url": "https://github.com/oppodeldoc/mseg-openletter/issues"
   },
-  "homepage": "https://github.com/AllForClimate/openletter#readme",
+  "homepage": "https://github.com/oppodeldoc/mseg-openletter#readme",
   "dependencies": {
     "@rebass/forms": "^4.0.6",
-    "@simplewebauthn/browser": "^11.0.0",
     "abort-controller": "^3.0.0",
     "accept-language-parser": "^1.5.0",
     "autoprefixer": "^10.4.16",
     "browserslist": "^4.21.10",
     "concurrently": "^5.1.0",
     "dotenv": "^8.2.0",
-    "graphql-request": "^6.1.0",
     "moment": "^2.26.0",
     "next": "^15.5.28",
     "node-fetch": "^2.6.0",
@@ -49,7 +43,6 @@
     "rebass": "^4.0.7",
     "reflexbox": "^4.0.6",
     "remark-gfm": "^1.0.0",
-    "stripe": "^22.0.0",
     "styled-components": "^5.3.11",
     "styled-system": "^5.1.5",
     "swr": "^2.2.4",
