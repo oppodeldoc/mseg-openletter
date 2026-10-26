@@ -17,7 +17,12 @@ module.exports = {
   |
   */
   origin: (origin) => {
-    return origin === 'https://openletter.earth';
+    // Comma-separated list of allowed origins, e.g. https://sign.ousd-mseg.org
+    const allowed = (process.env.CORS_ORIGINS || '')
+      .split(',')
+      .map((o) => o.trim())
+      .filter(Boolean);
+    return allowed.includes(origin);
   },
 
   /*

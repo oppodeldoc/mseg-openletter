@@ -22,6 +22,14 @@ function containsURL(str) {
   return patterns.some((pattern) => pattern.test(str));
 }
 
+// Letter creation/edition is a one-time admin operation for MSEG; keep it off unless explicitly enabled
+function letterEditingDisabled() {
+  return process.env.ALLOW_LETTER_CREATE !== 'true';
+}
+const letterEditingDisabledError = {
+  error: { code: 403, message: 'Letter creation is disabled on this server' },
+};
+
 // must match the column sizes of the signatures table
 const signatureMaxLengths = { name: 128, occupation: 64, city: 64, organization: 64 };
 
@@ -89,6 +97,7 @@ class LetterController {
       letters.map((l, i) => {
         const letter = l.toJSON();
         letter.signatures.map((s) => {
+          if (!s.show_name) s.name = null; // signer asked to stay anonymous; still counted
           if (s.is_verified) {
             verified_signatures.push(s);
             signatures_stats.verified++;
@@ -137,6 +146,7 @@ class LetterController {
   }
 
   async create({ request }) {
+    if (letterEditingDisabled()) return letterEditingDisabledError;
     const formData = request.only(['letters']);
     console.log('>>> LetterController.create', formData);
     let user = {};
@@ -164,19 +174,10 @@ class LetterController {
     }
 
     if (formData.letters[0].email) {
-      const locale =
-        acceptLanguageParser.pick(['en', 'fr', 'nl'], request.headers()['accept-language'], { loose: true }) || 'en';
-
-      const subject = {
-        en: 'KEEP: Link to post updates to your open letter',
-        nl: 'KEEP: Link to post updates to your open letter',
-        fr: 'A GARDER: Lien pour poster une mise à jour à votre lettre ouverte',
-      };
-
-      console.log('>>> send email confirmation for locale', locale);
+      const subject = 'KEEP: Link to post updates to your statement';
 
       try {
-        await sendEmail(formData.letters[0].email, subject[locale], `emails.${locale}.link_to_edit_openletter`, {
+        await sendEmail(formData.letters[0].email, subject, 'emails.en.link_to_edit_openletter', {
           letter: letters[0],
           env: process.env,
         });
@@ -193,6 +194,7 @@ class LetterController {
    * @param {*} param0
    */
   async update({ request }) {
+    if (letterEditingDisabled()) return letterEditingDisabledError;
     const formData = request.only(['letters', 'parent_letter_id', 'token']);
     console.log('>>> LetterController.update', formData);
 
@@ -244,6 +246,7 @@ class LetterController {
    * @param {*} param0
    */
   async delete({ request }) {
+    if (letterEditingDisabled()) return letterEditingDisabledError;
     const formData = request.only(['parent_letter_id', 'token']);
     console.log('>>> LetterController.delete', formData);
 
@@ -265,17 +268,28 @@ class LetterController {
       code: 200,
       status: 'success',
       action: 'delete',
-      letter_url: `https://openletter.earth/${parentLetter.slug}`,
+      letter_url: `${process.env.WEBSITE_URL}/${parentLetter.slug}`,
       message: `Open letter removed successfully`,
     };
   }
 
   async sign({ request }) {
-    const signatureData = request.only(['name', 'occupation', 'city', 'organization', 'share_email', 'id', 'token']);
+    const signatureData = request.only([
+      'name',
+      'occupation',
+      'city',
+      'organization',
+      'share_email',
+      'show_name',
+      'id',
+      'token',
+    ]);
+    // checkbox semantics: anything but an explicit false means "show my name"
+    signatureData.show_name = !(signatureData.show_name === false || signatureData.show_name === 'false');
 
-    // only accept one signature per 30s per ip address
+    // only accept one signature per 30s per ip address (not enforced in the test suite)
     const ipAddress = request.headers()['x-forwarded-for'] || request.ip;
-    if (ipAddress) {
+    if (ipAddress && process.env.NODE_ENV !== 'testing') {
       if (latestSignatureTimestampByIpAddress[ipAddress] > new Date(Date.now() - 30000)) {
         console.log('>>> Too many requests: please try again later', ipAddress, JSON.stringify(signatureData));
         return {
@@ -325,21 +339,14 @@ class LetterController {
       .where('locale', request.params.locale)
       .first();
 
-    const usePasskey = request.body.use_passkey;
     const email = request.body.email;
 
-    if (!usePasskey && !email) {
-      return { error: { code: 400, message: 'Email is required when not using passkey' } };
+    if (!email) {
+      return { error: { code: 400, message: 'Email is required' } };
     }
 
-    // Generate token: from email if provided, or random for passkey-only signatures
-    if (email) {
-      const tokenData = `${letter.slug}-${email}-${process.env.APP_KEY}`;
-      signatureData.token = crypto.createHash('md5').update(tokenData).digest('hex');
-    } else {
-      // Passkey without email: generate a unique random token
-      signatureData.token = crypto.randomBytes(16).toString('hex');
-    }
+    const tokenData = `${letter.slug}-${email}-${process.env.APP_KEY}`;
+    signatureData.token = crypto.createHash('md5').update(tokenData).digest('hex');
 
     if (signatureData.share_email && email) {
       signatureData.email = email;
@@ -367,32 +374,15 @@ class LetterController {
       }
     }
 
-    // If using passkey, skip email confirmation — return signature ID for WebAuthn flow
-    if (request.body.use_passkey) {
-      if (ipAddress) {
-        latestSignatureTimestampByIpAddress[ipAddress] = new Date();
-      }
-      const res = signature.toJSON();
-      res.id = signature.id; // include ID for passkey registration
-      return res;
-    }
-
     const emailData = {
       letter: letter.toJSON(),
       signature: signature.toJSON(),
       env: process.env,
     };
     emailData.signature.token = signature.token;
-    const locale =
-      acceptLanguageParser.pick(['en', 'fr', 'nl'], request.headers()['accept-language'], { loose: true }) || 'en';
+    const subject = 'ACTION REQUIRED: Please confirm your signature on the MSEG statement';
 
-    const subject = {
-      en: 'ACTION REQUIRED: Please confirm your signature on this open letter',
-      nl: 'ACTIE VEREIST: Bevestig uw handtekening onder deze open brief',
-      fr: 'ACTION REQUISE: Veuillez confirmer votre signature sur cette lettre ouverte',
-    };
-
-    await sendEmail(request.body.email, subject[locale], `emails.${locale}.confirm_signature`, emailData);
+    await sendEmail(request.body.email, subject, 'emails.en.confirm_signature', emailData);
     // if successful, we remove the email from database if the user didn't subscribe for updates
     if (!request.body.share_email) {
       signature.email = null;

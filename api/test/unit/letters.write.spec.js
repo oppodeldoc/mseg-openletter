@@ -167,7 +167,7 @@ async function cleandb() {
     assert.equal(signature.email, null);
     const emailSent = Mail.pullRecent();
     assert.equal(emailSent.message.to[0].address, signatureData.email);
-    assert.equal(emailSent.message.subject, 'ACTION REQUIRED: Please confirm your signature on this open letter');
+    assert.equal(emailSent.message.subject, 'ACTION REQUIRED: Please confirm your signature on the MSEG statement');
   });
 
   test('POST /signatures/confirm', async ({ client, assert }) => {

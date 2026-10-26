@@ -55,7 +55,7 @@ module.exports = {
     | values. Read documentation for that.
     |
     */
-    trustProxy: false,
+    trustProxy: true, // behind Caddy; needed for x-forwarded-for rate limiting and URLs
 
     /*
     |--------------------------------------------------------------------------

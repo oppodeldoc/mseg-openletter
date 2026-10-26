@@ -1,31 +1,25 @@
-# Adonis fullstack application
+# MSEG sign-on API
 
-This is the fullstack boilerplate for AdonisJs, it comes pre-configured with.
+AdonisJS 4.1 service behind `https://api.sign.ousd-mseg.org`. Fork of the
+[openletter.earth](https://github.com/citizenspring/openletter) API; see [`../DEPLOY.md`](../DEPLOY.md)
+for how it is built, configured and run on the-brain.
 
-1. Bodyparser
-2. Session
-3. Authentication
-4. Web security middleware
-5. CORS
-6. Edge template engine
-7. Lucid ORM
-8. Migrations and seeds
-
-## Setup
-
-Use the adonis command to install the blueprint
+## Local development
 
 ```bash
-adonis new yardstick
+docker run --rm -d --name openletter-pg -e POSTGRES_PASSWORD=x -p 5433:5432 postgres:16-alpine
+cp .env.example .env   # then set DATABASE_URL=postgres://postgres:x@localhost:5433/postgres, APP_KEY, MAIL_* (or MAIL_CONNECTION=ethereal)
+npm install
+node ace migration:run
+node ace serve --dev
 ```
 
-or manually clone the repo and then run `npm install`.
+## Tests
 
+`.env.testing` is picked up automatically and uses the `openletter_test` database on the same server:
 
-### Migrations
-
-Run the following command to run startup migrations.
-
-```js
-adonis migration:run
+```bash
+docker exec openletter-pg psql -U postgres -c 'CREATE DATABASE openletter_test;'
+DATABASE_URL=postgres://postgres:x@localhost:5433/openletter_test node ace migration:run --force
+DATABASE_URL=postgres://postgres:x@localhost:5433/openletter_test node ace test
 ```

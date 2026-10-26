@@ -5,31 +5,29 @@
   <body>
     <h2>👋 {{ signature.name }}</h2>
 <p>
-  Thank you for co-signing this open letter (<a href="{{env.WEBSITE_URL}}/{{letter.slug}}">{{letter.title}}</a>). In order to confirm your signature, we need you to confirm by clicking on the button below.
+  Thank you for signing <a href="{{env.WEBSITE_URL}}/{{letter.slug}}">{{letter.title}}</a>. To confirm your signature, click the button below.
 </p>
 
 <p>
   <center>
     <a href="{{env.WEBSITE_URL}}/{{letter.slug}}/confirm_signature?token={{signature.token}}" style="text-decoration: none;display:inline-block;width:220px;font-size: 12pt; font-family: Arial; background: #111; color: white; padding: 10px; border-radius: 5px; box-sizing: border-box;">
       Confirm Signature
-    </a>    
+    </a>
   </center>
 </p>
 
 <h3>About your privacy 🔏</h3>
 <p>
-  We take your privacy very seriously. We don't have any cookies or other trackers. We don't record your email address unless you explicitly opted in to receive updates about a specific open letter. 
-</p>
-<p>
-  If you like software that respects your privacy, please consider supporting our work by <a href="https://opencollective.com/openletter/donate">donating to our open collective</a>. Thank you 🙏
+  We take your privacy seriously. There are no cookies or trackers on the signing page. We don't keep your email address unless you explicitly opted in to receive updates about this statement.
+  Read our <a href="{{env.PRIVACY_URL}}">privacy notice</a>.
 </p>
 
 <h3>What if I want to change my signature?</h3>
 <p>
-  Use this link to change your signature: 
+  Use this link to change your signature:
   <a href="{{env.WEBSITE_URL}}/{{letter.slug}}?token={{signature.token}}">
     Edit Signature
-  </a> (Keep this email preciously in case you want to modify your signature in the future (and don't share it with anyone!).
+  </a> (keep this email in case you want to modify your signature later, and don't share it with anyone).
 </p>
 </body>
 </html>

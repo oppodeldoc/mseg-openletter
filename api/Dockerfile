@@ -1,23 +1,19 @@
-# Use Node.js 16 as the base image
-FROM node:16-alpine
+FROM node:22-alpine
 
-# Install curl
+# curl is used by the container healthcheck (GET /health)
 RUN apk add --no-cache curl
 
-# Set working directory
 WORKDIR /app
 
-# Copy the application code
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
 COPY . /app
 
-# AdonisJS 4 crashes if .env doesn't exist; Coolify injects env vars at runtime
+# AdonisJS 4 crashes if .env doesn't exist; all config comes from the runtime environment
 RUN touch /app/.env
 
-# Install dependencies
-RUN npm i
-
-# Expose the port the app runs on
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"] 
+# docker-compose overrides this with: node ace migration:run --force && npm start
+CMD ["npm", "start"]

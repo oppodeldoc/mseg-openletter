@@ -1,13 +1,12 @@
 {
-  "name": "adonis-fullstack-app",
+  "name": "mseg-openletter-api",
   "version": "4.1.0",
   "adonis-version": "4.1.0",
-  "description": "The fullstack application boilerplate for Adonisjs",
+  "description": "API for the MSEG sign-on statement (fork of citizenspring/openletter)",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node ace test",
-    "db:copy:prod": "./scripts/dbdump-from-heroku.sh openletter-earth"
+    "test": "node ace test"
   },
   "keywords": [
     "adonisjs",
@@ -30,7 +29,6 @@
     "@adonisjs/shield": "^1.0.8",
     "@adonisjs/vow": "^1.0.17",
     "@adonisjs/vow-browser": "^1.0.7",
-    "@simplewebauthn/server": "^11.0.0",
     "accept-language-parser": "^1.5.0",
     "image-size": "^1.0.2",
     "node-fetch": "^2.7.0",
