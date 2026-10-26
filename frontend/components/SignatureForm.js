@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withIntl } from '../lib/i18n';
-import { ROLES, OTHER_ROLE } from '../constants/roles';
+import { ROLES } from '../constants/roles';
 
 const fieldClass =
   'border-dotted border-gray-400 border p-2 rounded-lg w-full bg-white dark:bg-black dark:text-gray-50 dark:border-white focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-900 dark:focus:ring-white';
@@ -21,15 +21,11 @@ class SignatureForm extends Component {
   constructor(props) {
     super(props);
     const existing = this.props.signature || {};
-    const existingRole = existing.occupation || '';
-    const roleIsPreset = ROLES.includes(existingRole);
     this.state = {
       loading: false,
-      // which <option> is selected; the free-text value lives in form.occupation
-      roleChoice: existingRole ? (roleIsPreset ? existingRole : OTHER_ROLE) : '',
       form: {
         name: existing.name || null,
-        occupation: existingRole || null,
+        occupation: ROLES.includes(existing.occupation) ? existing.occupation : '',
         city: existing.city || null,
         organization: existing.organization || null,
         email: null,
@@ -41,7 +37,6 @@ class SignatureForm extends Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleRoleChoice = this.handleRoleChoice.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -49,12 +44,6 @@ class SignatureForm extends Component {
     const { form } = this.state;
     form[fieldname] = value;
     this.setState({ form });
-  }
-
-  handleRoleChoice(choice) {
-    // a preset role is the stored value; "Other" clears it until the text field is filled
-    this.handleChange('occupation', choice === OTHER_ROLE ? '' : choice);
-    this.setState({ roleChoice: choice });
   }
 
   async handleSubmit(event) {
@@ -74,7 +63,7 @@ class SignatureForm extends Component {
 
   render() {
     const { error, t, letter } = this.props;
-    const { roleChoice, form } = this.state;
+    const { form } = this.state;
     const existing = this.props.signature || {};
 
     return (
@@ -94,14 +83,14 @@ class SignatureForm extends Component {
             />
           </Field>
 
-          <Field label={t('sign.role')} name="role">
+          <Field label={t('sign.role')} name="occupation">
             <select
-              id="role"
-              name="role"
+              id="occupation"
+              name="occupation"
               className={fieldClass}
               required
-              value={roleChoice}
-              onChange={(e) => this.handleRoleChoice(e.target.value)}
+              value={form.occupation}
+              onChange={(e) => this.handleChange('occupation', e.target.value)}
             >
               <option value="" disabled>
                 {t('sign.role.placeholder')}
@@ -111,24 +100,8 @@ class SignatureForm extends Component {
                   {role}
                 </option>
               ))}
-              <option value={OTHER_ROLE}>{t('sign.role.other')}</option>
             </select>
           </Field>
-
-          {roleChoice === OTHER_ROLE && (
-            <Field label={t('sign.role.other.label')} name="occupation">
-              <input
-                className={fieldClass}
-                type="text"
-                id="occupation"
-                name="occupation"
-                maxLength={64}
-                required
-                defaultValue={ROLES.includes(existing.occupation) ? '' : existing.occupation}
-                onChange={(e) => this.handleChange('occupation', e.target.value)}
-              />
-            </Field>
-          )}
 
           <div className="flex w-full gap-2">
             <div className="w-1/2">

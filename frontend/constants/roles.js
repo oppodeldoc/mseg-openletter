@@ -1,5 +1,6 @@
 // Role labels shown in the signature form, in display order. Stored in the
-// signatures.occupation column (64 chars max). "Other" reveals a free-text field.
+// signatures.occupation column. No free text: the API rejects anything else
+// (keep api/config/roles.js in sync).
 export const ROLES = [
   'OUSD Parent/Guardian',
   'OUSD Student',
@@ -9,5 +10,3 @@ export const ROLES = [
   'School Board Director',
   'Community Member',
 ];
-
-export const OTHER_ROLE = 'Other';

@@ -63,7 +63,7 @@ async function cleandb() {
   test('POST /letters/:slug/:locale/sign error', async ({ client, assert }) => {
     const signatureData = {
       name: 'Xavier',
-      occupation: 'Entrepreneur',
+      occupation: 'Community Member',
       organization: 'AllForClimate',
       city: 'Brussels',
       email: 'author',
@@ -102,7 +102,7 @@ async function cleandb() {
   test('POST /letters/:slug/:locale/sign and share email', async ({ client, assert }) => {
     const signatureData = {
       name: 'Xavier',
-      occupation: 'Entrepreneur',
+      occupation: 'Community Member',
       organization: 'AllForClimate',
       city: 'Brussels',
       email: 'author@gmail.com',
@@ -123,7 +123,7 @@ async function cleandb() {
   test("POST /letters/:slug/:locale/sign and don't share email", async ({ client, assert }) => {
     const signatureData = {
       name: 'Xavier',
-      occupation: 'Entrepreneur',
+      occupation: 'Community Member',
       organization: 'AllForClimate',
       city: 'Brussels',
       email: 'author2@gmail.com',
@@ -147,7 +147,7 @@ async function cleandb() {
   }) => {
     const signatureData = {
       name: 'Xavier',
-      occupation: 'Entrepreneur',
+      occupation: 'Community Member',
       organization: 'Citizen Spring',
       city: 'Brussels',
       email: 'author2@gmail.com',
@@ -181,7 +181,7 @@ async function cleandb() {
   test('POST /letters/:slug/:locale/sign error if already signed', async ({ client, assert }) => {
     const signatureData = {
       name: 'Xavier',
-      occupation: 'Entrepreneur',
+      occupation: 'Community Member',
       organization: 'AllForClimate',
       city: 'Brussels',
       email: 'author@gmail.com',

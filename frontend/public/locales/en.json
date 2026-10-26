@@ -73,8 +73,6 @@
   "signatures.view_all": "view all",
   "sign.role": "Your role",
   "sign.role.placeholder": "Choose one…",
-  "sign.role.other": "Other",
-  "sign.role.other.label": "Please describe your role",
   "sign.show_name": "Display my name publicly",
   "sign.show_name.hint": "Untick to be listed as \"Anonymous\" with your role. Your name is still recorded so MSEG can verify signatures.",
   "signature.anonymous": "Anonymous",

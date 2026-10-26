@@ -72,6 +72,16 @@ async function cleandb() {
     assert.isNull(byRole['OUSD Teacher']);
   });
 
+  test('a role outside the list is rejected', async ({ client, assert }) => {
+    const response = await client
+      .post(`/letters/${letter.slug}/${letter.locale}/sign`)
+      .send({ name: 'Free Texter', occupation: 'Retired Librarian', email: 'free@example.org' })
+      .end();
+    response.assertStatus(200);
+    assert.equal(response.body.error.code, 400);
+    assert.equal(await Signature.query().where('letter_id', letter.id).where('name', 'Free Texter').getCount(), 0);
+  });
+
   test('show_name defaults to true when omitted', async ({ client, assert }) => {
     const response = await client
       .post(`/letters/${letter.slug}/${letter.locale}/sign`)

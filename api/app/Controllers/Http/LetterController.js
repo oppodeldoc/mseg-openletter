@@ -9,6 +9,7 @@ const Logger = use('Logger');
 Logger.level = 'info';
 
 const availableLocales = require('../../../locales.json');
+const allowedRoles = require('../../../config/roles');
 
 const { sendEmail } = use('App/Libs/email');
 const { getImageSize } = use('App/Libs/image');
@@ -316,6 +317,11 @@ class LetterController {
           },
         };
       }
+    }
+
+    if (!allowedRoles.includes(signatureData.occupation)) {
+      console.log('>>> invalid role', signatureData.occupation);
+      return { error: { code: 400, message: 'Invalid signature: please choose a role from the list' } };
     }
 
     if (signatureData.id && signatureData.token) {
