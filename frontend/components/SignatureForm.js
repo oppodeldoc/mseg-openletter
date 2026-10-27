@@ -26,8 +26,6 @@ class SignatureForm extends Component {
       form: {
         name: existing.name || null,
         occupation: ROLES.includes(existing.occupation) ? existing.occupation : '',
-        city: existing.city || null,
-        organization: existing.organization || null,
         email: null,
         share_email: false,
         show_name: typeof existing.show_name === 'boolean' ? existing.show_name : true,
@@ -102,37 +100,6 @@ class SignatureForm extends Component {
               ))}
             </select>
           </Field>
-
-          <div className="flex w-full gap-2">
-            <div className="w-1/2">
-              <Field label={t('sign.organization')} name="organization">
-                <input
-                  className={fieldClass}
-                  type="text"
-                  id="organization"
-                  name="organization"
-                  autoComplete="organization"
-                  maxLength={64}
-                  defaultValue={existing.organization}
-                  onChange={(e) => this.handleChange('organization', e.target.value)}
-                />
-              </Field>
-            </div>
-            <div className="w-1/2">
-              <Field label={t('sign.city')} name="city">
-                <input
-                  className={fieldClass}
-                  type="text"
-                  id="city"
-                  name="city"
-                  autoComplete="address-level2"
-                  maxLength={64}
-                  defaultValue={existing.city}
-                  onChange={(e) => this.handleChange('city', e.target.value)}
-                />
-              </Field>
-            </div>
-          </div>
 
           {!this.updatingSignature && (
             <Field label={t('sign.email')} name="email">
