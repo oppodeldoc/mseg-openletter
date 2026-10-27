@@ -80,6 +80,10 @@ Migrations run automatically on container start (`node ace migration:run --force
 
 ## Day-to-day
 
+- **Edit the statement's text in place** (keeps slug and signatures; no unlock needed): put the new Markdown in a file, then on the-brain
+  `docker exec -i openletter-api node scripts/set-letter-text.js <slug> --dry-run < new.md` to preview, and again without `--dry-run` to write
+  (`--title "..."` also changes the title). The page updates within a few seconds (ISR). The edit link's `/update` page does **not** edit the body — it appends a dated update below the statement.
+
 - **Remove a signature** (email request): `docker exec -it postgres psql -U aleph -d openletter -c "SELECT id, name, occupation, created_at FROM signatures WHERE email = '…' OR name ILIKE '%…%';"` then `DELETE FROM signatures WHERE id = N;`
 - **Export signers**: `docker exec postgres psql -U aleph -d openletter -c "\copy (SELECT name, show_name, occupation, organization, city, is_verified, created_at FROM signatures ORDER BY created_at) TO STDOUT CSV HEADER" > signers.csv`
 - **Anonymous signers**: `show_name = false`; the name is stored but the API returns `name: null` for them.
