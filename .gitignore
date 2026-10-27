@@ -116,3 +116,7 @@ dist
 # Vercel CLI link
 .vercel
 .env*
+
+# local working copies of the live statement text
+statement-current.md
+statement-new.md

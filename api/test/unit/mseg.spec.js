@@ -37,14 +37,14 @@ async function cleandb() {
 
     const shown = await sign({
       name: 'Shown Parent',
-      occupation: 'OUSD Parent/Guardian',
+      occupation: 'Parent/Guardian',
       email: 'shown@example.org',
       show_name: true,
     });
     shown.assertStatus(200);
     const hidden = await sign({
       name: 'Hidden Teacher',
-      occupation: 'OUSD Teacher',
+      occupation: 'Teacher',
       email: 'hidden@example.org',
       show_name: false,
     });
@@ -68,8 +68,8 @@ async function cleandb() {
     assert.equal(response.body.signatures_stats.verified, 2);
     const byRole = {};
     response.body.signatures.forEach((s) => (byRole[s.occupation] = s.name));
-    assert.equal(byRole['OUSD Parent/Guardian'], 'Shown Parent');
-    assert.isNull(byRole['OUSD Teacher']);
+    assert.equal(byRole['Parent/Guardian'], 'Shown Parent');
+    assert.isNull(byRole['Teacher']);
   });
 
   test('a role outside the list is rejected', async ({ client, assert }) => {
