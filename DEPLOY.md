@@ -73,6 +73,11 @@ Migrations run automatically on container start (`node ace migration:run --force
 2. Visit `https://sign.ousd-mseg.org/create`, enter the statement; the author email receives the **edit link** (`/<slug>/update?token=…`). Store it in 1Password — anyone with it can edit or delete the statement.
 3. Set `ALLOW_LETTER_CREATE=false` on both sides again (restart container, redeploy Vercel). Set `LETTER_SLUG=<slug>` in Vercel and redeploy → `/` redirects to the statement.
 
+## Production statement
+
+- Slug: `statement-of-support-for-the-ousd-multi-stakeholder-engagement-group-mseg-ae1488e2` (letter id 4), published 2026-10-27. `LETTER_SLUG` in Vercel points at it, so `/` redirects there.
+- **Editing or deleting it later** needs the edit link from the author email *and* `ALLOW_LETTER_CREATE=true` on both sides for the duration (API: `openletter-api.env` + `docker compose up -d --no-deps --force-recreate openletter-api`; Vercel: add the env var + redeploy), then flip both back. Update/delete are gated together with create.
+
 ## Day-to-day
 
 - **Remove a signature** (email request): `docker exec -it postgres psql -U aleph -d openletter -c "SELECT id, name, occupation, created_at FROM signatures WHERE email = '…' OR name ILIKE '%…%';"` then `DELETE FROM signatures WHERE id = N;`
