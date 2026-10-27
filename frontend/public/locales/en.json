@@ -74,7 +74,7 @@
   "sign.show_name": "Display my name publicly",
   "sign.show_name.hint": "Untick to be listed as \"Anonymous\" with your role. Your name is still recorded so MSEG can verify signatures.",
   "signature.anonymous": "Anonymous",
-  "footer.tagline": "A statement by the Measure Stakeholder Engagement Group (MSEG), Oakland Unified School District.",
+  "footer.tagline": "OUSD Multi-Stakeholder Engagement Group (MSEG), Oakland Unified School District.",
   "footer.mseg": "ousd-mseg.org",
   "footer.privacy": "Privacy notice",
   "footer.create": "Sign the statement",
