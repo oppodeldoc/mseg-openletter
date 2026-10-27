@@ -75,7 +75,7 @@ Migrations run automatically on container start (`node ace migration:run --force
 
 ## Production statement
 
-- Slug: `statement-of-support-for-the-ousd-multi-stakeholder-engagement-group-mseg-ae1488e2` (letter id 4), published 2026-10-27. `LETTER_SLUG` in Vercel points at it, so `/` redirects there.
+- Slug: `statement-of-support-for-the-ousd-multi-stakeholder-engagement-group-mseg-1f574d47` (letter id 5), republished 2026-10-27 (the first version, id 4, was deleted). `LETTER_SLUG` in Vercel points at it, so `/` redirects there.
 - **Editing or deleting it later** needs the edit link from the author email *and* `ALLOW_LETTER_CREATE=true` on both sides for the duration (API: `openletter-api.env` + `docker compose up -d --no-deps --force-recreate openletter-api`; Vercel: add the env var + redeploy), then flip both back. Update/delete are gated together with create.
 
 ## Day-to-day
